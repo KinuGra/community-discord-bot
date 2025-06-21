@@ -19,7 +19,8 @@ async def on_ready():
     print(f"{bot.user} が起動しました")
 
     # cogsディレクトリの.pyファイルを全て読み込む
-    for filename in os.listdir("./cogs"):
+    cogs_dir = os.path.join(os.path.dirname(__file__), "cogs")
+    for filename in os.listdir(cogs_dir):
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
