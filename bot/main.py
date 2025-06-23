@@ -3,6 +3,7 @@ import discord
 import os
 from dotenv import load_dotenv
 
+# 権限設定
 intents = discord.Intents.default()
 intents.message_content = True # メッセージの内容を取得する権限
 
