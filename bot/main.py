@@ -18,11 +18,19 @@ bot = commands.Bot(
 async def on_ready():
     print(f"{bot.user} が起動しました")
 
-    # cogsディレクトリの.pyファイルを全て読み込む
-    cogs_dir = os.path.join(os.path.dirname(__file__), "cogs")
-    for filename in os.listdir(cogs_dir):
-        if filename.endswith(".py"):
-            await bot.load_extension(f"cogs.{filename[:-3]}")
+    # 再帰的に cogs/ 以下の .py ファイルをすべて読み込む
+    cogs_root = os.path.join(os.path.dirname(__file__), "cogs")
+    for root, dirs, files in os.walk(cogs_root):
+        for file in files:
+            if file.endswith(".py") and not file.startswith("_"):
+                # cogs ディレクトリからの相対パスをモジュール名に変換
+                rel_path = os.path.relpath(os.path.join(root, file), os.path.dirname(__file__))
+                module_path = rel_path[:-3].replace(os.path.sep, ".")  # .pyを除去、/を.に
+                try:
+                    await bot.load_extension(module_path)
+                    print(f"{module_path} を読み込みました")
+                except Exception as e:
+                    print(f"{module_path} の読み込みに失敗: {e}")
 
 # botの起動処理
 load_dotenv()
